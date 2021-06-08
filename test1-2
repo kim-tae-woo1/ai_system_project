@@ -1,0 +1,32 @@
+import numpy as np 
+import pandas as pd 
+import matplotlib.pyplot as plt
+import cv2
+import os
+from sklearn.model_selection import train_test_split
+train_dir=".spyder-py3\input\fruits-360\Training"
+test_dir='fruits-360/Test/'
+#create dataframe from training and test directory
+traindf=pd.DataFrame(columns=['img_path','class'])
+test_df=pd.DataFrame(columns=['img_path','class'])
+for className in os.listdir(train_dir):
+    for filename in os.listdir(os.path.join(train_dir,className)):
+        img_path=(os.path.join(train_dir,className,filename))
+        traindf=traindf.append({'img_path':img_path,'class':className},ignore_index=True)
+for className in os.listdir(test_dir):
+    for filename in os.listdir(os.path.join(test_dir,className)):
+        img_path=(os.path.join(test_dir,className,filename))
+        test_df=test_df.append({'img_path':img_path,'class':className},ignore_index=True)
+#create validation set from training data
+train_df,valid_df=train_test_split(traindf,test_size=0.1,random_state=0)
+print(len(train_df), len(test_df), len(valid_df))
+
+tf=train_df['class'].value_counts().to_frame().reset_index() 
+tf.rename(columns={"index": "class", "class": "train_counts"},inplace=True)
+tf1=test_df['class'].value_counts().to_frame().reset_index() 
+tf1.rename(columns={"index": "class", "class": "test_counts"},inplace=True)
+tf2=valid_df['class'].value_counts().to_frame().reset_index() 
+tf2.rename(columns={"index": "class", "class": "valid_counts"},inplace=True)
+df=pd.merge(tf,tf1,on='class')
+df=pd.merge(df,tf2,on='class')
+df
