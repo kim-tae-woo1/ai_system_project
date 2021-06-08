@@ -17,9 +17,9 @@ def getYourFruits(fruits, data_type, print_n=False, k_fold=False):
             p = path + f
             j=0
             for image_path in glob.glob(os.path.join(p, "*.jpg")):
-                image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+                image = cv2.imread(image_path, cv2.IMREAD_COLOR)
                 image = cv2.resize(image, (dim, dim))
-                image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
                 images.append(image)
                 labels.append(i)
                 j+=1
@@ -36,9 +36,9 @@ def getYourFruits(fruits, data_type, print_n=False, k_fold=False):
                 p = path + f
                 j=0
                 for image_path in glob.glob(os.path.join(p, "*.jpg")):
-                    image = cv2.imread(image_path, cv2.GRAYSCALE)
+                    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
                     image = cv2.resize(image, (dim, dim))
-                    image = cv2.cvtColor(image, cv2.GRAY2BGR)
+                    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
                     images.append(image)
                     labels.append(i)
                     j+=1
