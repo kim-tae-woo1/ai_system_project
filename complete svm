@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 
-os.listdir("input//fruits-360")
+os.listdir("external_dataset\\fruits-360")
 dim = 100
 
 def getYourFruits(fruits, data_type, print_n=False, k_fold=False):
@@ -12,7 +12,7 @@ def getYourFruits(fruits, data_type, print_n=False, k_fold=False):
     labels = []
     val = ['Training', 'Test']
     if not k_fold:
-        path = "input//fruits-360/" + data_type + "/"
+        path = "external_dataset//fruits-360/" + data_type + "/"
         for i,f in enumerate(fruits):
             p = path + f
             j=0
@@ -31,7 +31,7 @@ def getYourFruits(fruits, data_type, print_n=False, k_fold=False):
         return images, labels
     else:
         for v in val:
-            path = "input//fruits-360/" + v + "/"
+            path = "external_dataset//fruits-360/" + v + "/"
             for i,f in enumerate(fruits):
                 p = path + f
                 j=0
