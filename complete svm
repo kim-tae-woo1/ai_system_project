@@ -59,7 +59,7 @@ x_test = scaler.fit_transform([i.flatten() for i in x_test])
 print(x_train.shape,y_train.shape)
 print(x_test.shape,y_test.shape)
 
-s=svm.SVC(gamma=0.00001)
+s=svm.SVC(gamma=0.00001,C=10)
 s.fit(x_train, y_train)
 
 res = s.predict(x_test)
