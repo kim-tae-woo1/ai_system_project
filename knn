@@ -1,0 +1,71 @@
+import numpy as np 
+import cv2, glob, os
+from sklearn.preprocessing import StandardScaler
+from sklearn import svm
+from sklearn.neural_network import MLPClassifier
+from sklearn.linear_model import Perceptron
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+
+dim = 100
+
+def getYourFruits(fruits, data_type, k_fold=False):
+    images = []
+    labels = []
+    val = ['Training', 'Test']
+    if not k_fold:
+        path = "external_dataset//fruits-360/" + data_type + "/"
+        for i,f in enumerate(fruits):
+            p = path + f
+            j=0
+            for image_path in glob.glob(os.path.join(p, "*.jpg")):
+                image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+                image = cv2.resize(image, (dim, dim))
+                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                images.append(image)
+                labels.append(i)
+                j+=1
+        images = np.array(images)
+        labels = np.array(labels)
+        return images, labels
+    else:
+        for v in val:
+            path = "external_dataset//fruits-360/" + v + "/"
+            for i,f in enumerate(fruits):
+                p = path + f
+                j=0
+                for image_path in glob.glob(os.path.join(p, "*.jpg")):
+                    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+                    image = cv2.resize(image, (dim, dim))
+                    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                    images.append(image)
+                    labels.append(i)
+                    j+=1
+        images = np.array(images)
+        labels = np.array(labels)
+        return images, labels
+
+fruits = ['Avocado','Banana','Cocos','Grape Blue','Pineapple']
+
+x_train, y_train =  getYourFruits(fruits, 'Training', k_fold=False)
+x_test, y_test = getYourFruits(fruits, 'Test', k_fold=False)
+
+scaler = StandardScaler()
+x_train = scaler.fit_transform([i.flatten() for i in x_train])
+x_test = scaler.fit_transform([i.flatten() for i in x_test])
+
+def acc_cal(res): 
+    conf = np.zeros((10, 10))
+    for i in range(len(res)):
+        conf[res[i]][y_test[i]] += 1
+    correct = 0
+    for i in range(10):
+        correct += conf[i][i]
+    accuracy = correct / len(res)
+    return accuracy
+knn = KNeighborsClassifier(n_neighbors=2)
+knn.fit(x_train, y_train)
+y_pred = knn.predict(x_test)
+
+precision = metrics.accuracy_score(y_pred, y_test) * 100
+print("Accuracy with K-NN: {0:.2f}%".format(precision))
