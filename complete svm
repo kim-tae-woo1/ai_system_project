@@ -1,0 +1,73 @@
+import numpy as np 
+import cv2, glob, os
+from sklearn.preprocessing import StandardScaler
+from sklearn import svm
+from sklearn.neural_network import MLPClassifier
+
+os.listdir("input//fruits-360")
+dim = 100
+
+def getYourFruits(fruits, data_type, print_n=False, k_fold=False):
+    images = []
+    labels = []
+    val = ['Training', 'Test']
+    if not k_fold:
+        path = "input//fruits-360/" + data_type + "/"
+        for i,f in enumerate(fruits):
+            p = path + f
+            j=0
+            for image_path in glob.glob(os.path.join(p, "*.jpg")):
+                image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+                image = cv2.resize(image, (dim, dim))
+                image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+                images.append(image)
+                labels.append(i)
+                j+=1
+                
+            if(print_n):
+                print("There are " , j , " " , data_type.upper(), " images of " , fruits[i].upper())
+        images = np.array(images)
+        labels = np.array(labels)
+        return images, labels
+    else:
+        for v in val:
+            path = "input//fruits-360/" + v + "/"
+            for i,f in enumerate(fruits):
+                p = path + f
+                j=0
+                for image_path in glob.glob(os.path.join(p, "*.jpg")):
+                    image = cv2.imread(image_path, cv2.GRAYSCALE)
+                    image = cv2.resize(image, (dim, dim))
+                    image = cv2.cvtColor(image, cv2.GRAY2BGR)
+                    images.append(image)
+                    labels.append(i)
+                    j+=1
+        images = np.array(images)
+        labels = np.array(labels)
+        return images, labels
+
+fruits = ['Avocado','Banana','Cocos','Grape Blue','Pineapple']
+
+x_train, y_train =  getYourFruits(fruits, 'Training', print_n=True, k_fold=False)
+x_test, y_test = getYourFruits(fruits, 'Test', print_n=True, k_fold=False)
+
+print(x_train.shape,y_train.shape)
+print(x_test.shape,y_test.shape)
+scaler = StandardScaler()
+x_train = scaler.fit_transform([i.flatten() for i in x_train])
+x_test = scaler.fit_transform([i.flatten() for i in x_test])
+print(x_train.shape,y_train.shape)
+print(x_test.shape,y_test.shape)
+
+s=svm.SVC(gamma=0.00001)
+s.fit(x_train, y_train)
+
+res = s.predict(x_test)
+conf = np.zeros((10, 10))
+for i in range(len(res)):
+    conf[res[i]][y_test[i]] += 1
+correct = 0
+for i in range(10):
+    correct += conf[i][i]
+accuracy = correct / len(res)
+print("accuracy is", accuracy * 100)
