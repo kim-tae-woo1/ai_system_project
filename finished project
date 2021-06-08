@@ -62,13 +62,13 @@ def acc_cal(res):
     accuracy = correct / len(res)
     return accuracy
 
-s=svm.SVC(gamma=0.00001,C=10)
+s=svm.SVC(gamma=0.00001,C=5)
 s.fit(x_train, y_train)
 res = s.predict(x_test)
 accuracy = acc_cal(res)
 print("SVM: accuracy is", accuracy * 100,"%")
 
-mlp = MLPClassifier(hidden_layer_sizes=(100), learning_rate_init= 0.001, batch_size=32
+mlp = MLPClassifier(hidden_layer_sizes=(100), learning_rate_init= 0.001, batch_size=64
                     , solver='adam',verbose = False)
 mlp.fit(x_train, y_train)
 res = mlp.predict(x_test)
