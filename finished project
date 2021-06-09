@@ -69,4 +69,4 @@ knn.fit(x_train, y_train)
 y_pred = knn.predict(x_test)
 
 precision = metrics.accuracy_score(y_pred, y_test) * 100
-print("Accuracy with K-NN: {0:.2f}%".format(precision))
+print("K-NN: accuracy is {0:.2f}%".format(precision))
