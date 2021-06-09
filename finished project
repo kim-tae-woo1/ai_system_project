@@ -4,9 +4,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import Perceptron
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
 
 dim = 100
-
 def getYourFruits(fruits, data_type):
     images = []
     labels = []
@@ -50,7 +51,7 @@ res = s.predict(x_test)
 accuracy = acc_cal(res)
 print("SVM: accuracy is", accuracy * 100,"%")
 
-mlp = MLPClassifier(hidden_layer_sizes=(100), learning_rate_init= 0.001, batch_size=64
+mlp = MLPClassifier(hidden_layer_sizes=(100), learning_rate_init= 0.001, batch_size=128
                     , solver='adam',verbose = False)
 mlp.fit(x_train, y_train)
 res = mlp.predict(x_test)
@@ -62,3 +63,10 @@ p.fit(x_train, y_train)
 res = p.predict(x_test)
 accuracy = acc_cal(res)
 print("Perceptron: accuracy is", accuracy * 100,"%")
+
+knn = KNeighborsClassifier(n_neighbors=2)
+knn.fit(x_train, y_train)
+y_pred = knn.predict(x_test)
+
+precision = metrics.accuracy_score(y_pred, y_test) * 100
+print("Accuracy with K-NN: {0:.2f}%".format(precision))
